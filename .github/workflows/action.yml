@@ -8,8 +8,11 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to EC2 on master branch push
+    name: Deploy to EC2 on main branch push
     runs-on: ubuntu-latest
+    environment:
+      name: testing  # This shows up in the GitHub UI under "Deployments"
+
     steps:
       - name: Checkout the files
         uses: actions/checkout@v2
@@ -45,3 +48,11 @@ jobs:
             if [ "${{ secrets.TARGET_DIR }}" != "/var/www/html" ]; then
               sudo rsync -av ${{ secrets.TARGET_DIR }}/ /var/www/html/
             fi
+
+      - name: Mark Deployment in GitHub UI
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: testing
+          status: success
