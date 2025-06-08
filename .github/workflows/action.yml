@@ -1,5 +1,10 @@
 name: Push-to-EC2
 
+permissions:
+  contents: read
+  deployments: write
+  statuses: write
+
 on:
   push:
     branches:
@@ -10,7 +15,7 @@ jobs:
     name: Deploy to EC2 on main branch push
     runs-on: ubuntu-latest
     environment:
-      name: testing  # Shows up under Deployments tab
+      name: testing
 
     steps:
       - name: Checkout the files
@@ -18,7 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Start the deployment (important: sets deployment_id)
       - name: Create Deployment
         id: deployment
         uses: bobheadxi/deployments@v1
@@ -27,7 +31,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: testing
 
-      # Deploy files
       - name: Deploy to Server 1
         uses: easingthemes/ssh-deploy@main
         env:
@@ -38,8 +41,7 @@ jobs:
           ARGS: "-avz --delete"
           EXCLUDE: ".git/, .github/, .gitignore, README.md"
 
-      # Setup Apache if needed
-      - name: Setup Apache (only run once)
+      - name: Setup Apache (if needed)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
@@ -47,17 +49,17 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             if [ ! -f /var/www/html/.apache_installed ]; then
-              sudo apt-get -y update
-              sudo apt-get install -y apache2
-              sudo systemctl start apache2
+              sudo apt-get update -y
+              sudo apt-get install apache2 -y
               sudo systemctl enable apache2
+              sudo systemctl start apache2
               sudo touch /var/www/html/.apache_installed
             fi
+
             if [ "${{ secrets.TARGET_DIR }}" != "/var/www/html" ]; then
               sudo rsync -av ${{ secrets.TARGET_DIR }}/ /var/www/html/
             fi
 
-      # ✅ Mark success
       - name: Mark Deployment Success
         if: success()
         uses: bobheadxi/deployments@v1
@@ -68,7 +70,6 @@ jobs:
           status: success
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-      # ❌ Mark failure if rsync or other steps fail
       - name: Mark Deployment Failed
         if: failure()
         uses: bobheadxi/deployments@v1
