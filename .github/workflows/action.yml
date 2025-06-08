@@ -50,9 +50,20 @@ jobs:
             fi
 
       - name: Mark Deployment in GitHub UI
+        if: success()
         uses: bobheadxi/deployments@v1
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
           env: testing
           status: success
+
+      - name: Mark Failed Deployment in GitHub UI
+        if: failure()
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: testing
+          status: failure
+
