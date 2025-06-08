@@ -1,6 +1,5 @@
 name: Push-to-EC2
 
-# Trigger deployment only on push to main branch
 on:
   push:
     branches:
@@ -11,14 +10,24 @@ jobs:
     name: Deploy to EC2 on main branch push
     runs-on: ubuntu-latest
     environment:
-      name: testing  # This shows up in the GitHub UI under "Deployments"
+      name: testing  # Shows up under Deployments tab
 
     steps:
       - name: Checkout the files
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Fetch all history to detect changes
+          fetch-depth: 0
 
+      # Start the deployment (important: sets deployment_id)
+      - name: Create Deployment
+        id: deployment
+        uses: bobheadxi/deployments@v1
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: testing
+
+      # Deploy files
       - name: Deploy to Server 1
         uses: easingthemes/ssh-deploy@main
         env:
@@ -26,10 +35,11 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOST_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
-          ARGS: "-avz --delete"  # -a preserves permissions, -v verbose, -z compression
-          EXCLUDE: ".git/, .github/, .gitignore, README.md"  # Files to exclude
+          ARGS: "-avz --delete"
+          EXCLUDE: ".git/, .github/, .gitignore, README.md"
 
-      - name: Setup Apache (only run once or when Apache config changes)
+      # Setup Apache if needed
+      - name: Setup Apache (only run once)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
@@ -43,13 +53,12 @@ jobs:
               sudo systemctl enable apache2
               sudo touch /var/www/html/.apache_installed
             fi
-            
-            # Copy files from deployment directory to web root if they don't go directly there
             if [ "${{ secrets.TARGET_DIR }}" != "/var/www/html" ]; then
               sudo rsync -av ${{ secrets.TARGET_DIR }}/ /var/www/html/
             fi
 
-      - name: Mark Deployment in GitHub UI
+      # ✅ Mark success
+      - name: Mark Deployment Success
         if: success()
         uses: bobheadxi/deployments@v1
         with:
@@ -57,8 +66,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: testing
           status: success
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-      - name: Mark Failed Deployment in GitHub UI
+      # ❌ Mark failure if rsync or other steps fail
+      - name: Mark Deployment Failed
         if: failure()
         uses: bobheadxi/deployments@v1
         with:
@@ -66,4 +77,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: testing
           status: failure
-
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
