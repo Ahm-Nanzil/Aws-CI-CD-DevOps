@@ -286,7 +286,7 @@
             }
         }
 
-        /* MATRIX RAIN EFFECT */
+        /* MATRIX RAIN EFFECT (AGGRESSIVE) */
         .matrix-rain {
             position: fixed;
             top: 0;
@@ -319,7 +319,7 @@
             }
         }
 
-        /* FIRE STORM EFFECT */
+        /* FIRE TORNADO EFFECT (AGGRESSIVE) */
         .fire-particle {
             position: fixed;
             width: 8px;
@@ -603,6 +603,18 @@
                 visibility: hidden;
             }
         }
+
+        /* FIRE STORM EFFECT */
+        .tornado-fire {
+            animation: none !important;
+            box-shadow: 0 0 30px 10px #ff6b6b88, 0 0 60px 20px #f39c1288;
+        }
+        @keyframes matrixFallAggressive {
+            0% { opacity: 0; transform: translateY(-40px) scale(1.2); filter: blur(2px); }
+            10% { opacity: 1; filter: blur(0); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(40px) scale(0.8); filter: blur(2px); }
+        }
     </style>
 </head>
 <body>
@@ -757,46 +769,77 @@
             }, 2000);
         }
 
-        // MATRIX RAIN EFFECT
+        // MATRIX RAIN EFFECT (AGGRESSIVE)
         function triggerMatrixRain() {
             const matrixContainer = document.getElementById('matrixRain');
             const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-            
-            // Clear existing chars
             matrixContainer.innerHTML = '';
-            
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
+            const columnCount = Math.floor(window.innerWidth / 22);
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.style.position = 'absolute';
+                column.style.left = (i * 22) + 'px';
+                column.style.top = '0';
+                column.style.height = '100%';
+                column.style.pointerEvents = 'none';
+                matrixContainer.appendChild(column);
+                let drops = Math.floor(window.innerHeight / 24);
+                let delay = Math.random() * 1.5;
+                for (let j = 0; j < drops; j++) {
                     const char = document.createElement('div');
                     char.className = 'matrix-char';
                     char.textContent = chars[Math.floor(Math.random() * chars.length)];
-                    char.style.left = Math.random() * 100 + '%';
-                    char.style.animationDuration = Math.random() * 2 + 2 + 's';
-                    char.style.animationDelay = Math.random() * 2 + 's';
-                    matrixContainer.appendChild(char);
-                    
-                    setTimeout(() => {
-                        char.remove();
-                    }, 4000);
-                }, i * 100);
+                    char.style.left = '0';
+                    char.style.top = (j * 24) + 'px';
+                    char.style.opacity = 0;
+                    char.style.animation = `matrixFallAggressive 1.2s linear ${delay + j * 0.08}s 1 forwards`;
+                    column.appendChild(char);
+                }
             }
+            // Remove all after animation
+            setTimeout(() => {
+                matrixContainer.innerHTML = '';
+            }, 2000);
         }
 
-        // FIRE STORM EFFECT
+        // FIRE TORNADO EFFECT (AGGRESSIVE)
         function triggerFireStorm() {
-            for (let i = 0; i < 80; i++) {
+            const tornadoCenterX = window.innerWidth / 2;
+            const tornadoCenterY = window.innerHeight * 0.7;
+            const spiralCount = 60;
+            const spiralDuration = 2.5;
+            for (let i = 0; i < spiralCount; i++) {
                 setTimeout(() => {
                     const fireParticle = document.createElement('div');
-                    fireParticle.className = 'fire-particle';
-                    fireParticle.style.left = Math.random() * 100 + '%';
-                    fireParticle.style.animationDuration = Math.random() * 2 + 2 + 's';
-                    fireParticle.style.animationDelay = Math.random() * 1 + 's';
+                    fireParticle.className = 'fire-particle tornado-fire';
                     document.body.appendChild(fireParticle);
-                    
-                    setTimeout(() => {
-                        fireParticle.remove();
-                    }, 4000);
-                }, i * 50);
+                    // Spiral params
+                    const angle = (i / spiralCount) * Math.PI * 2 * 3 + Math.random() * Math.PI * 2;
+                    const radius = 30 + Math.random() * 40;
+                    const startX = tornadoCenterX + Math.cos(angle) * radius;
+                    const startY = tornadoCenterY + Math.sin(angle) * radius;
+                    fireParticle.style.left = startX + 'px';
+                    fireParticle.style.top = startY + 'px';
+                    // Animate spiral upward
+                    let t = 0;
+                    function animate() {
+                        t += 0.016 * (2 + Math.random());
+                        const spiralRadius = radius * (1 - t / spiralDuration) + 10;
+                        const spiralAngle = angle + t * 6;
+                        const x = tornadoCenterX + Math.cos(spiralAngle) * spiralRadius;
+                        const y = tornadoCenterY - t * 250 + Math.sin(spiralAngle) * spiralRadius * 0.2;
+                        fireParticle.style.left = x + 'px';
+                        fireParticle.style.top = y + 'px';
+                        fireParticle.style.opacity = Math.max(0, 1 - t / spiralDuration);
+                        fireParticle.style.transform = `scale(${1 + Math.sin(t * 10) * 0.3})`;
+                        if (t < spiralDuration) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            fireParticle.remove();
+                        }
+                    }
+                    animate();
+                }, i * 30);
             }
         }
 
@@ -820,7 +863,6 @@
         }
 
         // MEGA CELEBRATION - ALL EFFECTS AT ONCE
-       // MEGA CELEBRATION - ALL EFFECTS AT ONCE
         function triggerMegaCelebration() {
             // Trigger all effects with delays
             triggerNuclearExplosion();
