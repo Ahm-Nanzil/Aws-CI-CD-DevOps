@@ -41,6 +41,21 @@ jobs:
           ARGS: "-avz --delete"
           EXCLUDE: ".git/, .github/, .gitignore, README.md"
 
+      - name: Set folder permissions
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo chmod -R 777 ${{ secrets.TARGET_DIR }}/storage \
+                            ${{ secrets.TARGET_DIR }}/storage/framework \
+                            ${{ secrets.TARGET_DIR }}/storage/logs \
+                            ${{ secrets.TARGET_DIR }}/storage/uploads \
+                            ${{ secrets.TARGET_DIR }}/bootstrap/cache \
+                            ${{ secrets.TARGET_DIR }}/resources/lang
+
+
       - name: Setup Apache (if needed)
         uses: appleboy/ssh-action@master
         with:
