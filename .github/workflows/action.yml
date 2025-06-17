@@ -48,12 +48,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo chmod -R 777 ${{ secrets.TARGET_DIR }}/storage \
-                            ${{ secrets.TARGET_DIR }}/storage/framework \
-                            ${{ secrets.TARGET_DIR }}/storage/logs \
-                            ${{ secrets.TARGET_DIR }}/storage/uploads \
-                            ${{ secrets.TARGET_DIR }}/bootstrap/cache \
-                            ${{ secrets.TARGET_DIR }}/resources/lang
+            sudo chmod -R 777 ${{ secrets.TARGET_DIR }}/ERP/storage \
+                            ${{ secrets.TARGET_DIR }}/ERP/storage/framework \
+                            ${{ secrets.TARGET_DIR }}/ERP/storage/logs \
+                            ${{ secrets.TARGET_DIR }}/ERP/storage/uploads \
+                            ${{ secrets.TARGET_DIR }}/ERP/bootstrap/cache \
+                            ${{ secrets.TARGET_DIR }}/ERP/resources/lang
 
 
       - name: Setup Apache (if needed)
