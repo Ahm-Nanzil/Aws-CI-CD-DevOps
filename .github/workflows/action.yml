@@ -41,20 +41,19 @@ jobs:
           ARGS: "-avz --delete"
           EXCLUDE: ".git/, .github/, .gitignore, README.md"
 
-      - name: Set folder permissions
+      - name: Set folder permissions (Laravel-safe)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo chmod -R 777 ${{ secrets.TARGET_DIR }}/ERP/storage \
-                            ${{ secrets.TARGET_DIR }}/ERP/storage/framework \
-                            ${{ secrets.TARGET_DIR }}/ERP/storage/logs \
-                            ${{ secrets.TARGET_DIR }}/ERP/storage/uploads \
-                            ${{ secrets.TARGET_DIR }}/ERP/bootstrap/cache \
-                            ${{ secrets.TARGET_DIR }}/ERP/resources/lang
-
+            for dir in storage storage/framework storage/logs storage/uploads bootstrap/cache resources/lang; do
+              path="${{ secrets.TARGET_DIR }}/ERP/$dir"
+              if [ -d "$path" ]; then
+                sudo chmod -R 777 "$path"
+              fi
+            done
 
       - name: Setup Apache (if needed)
         uses: appleboy/ssh-action@master
