@@ -585,7 +585,7 @@
                                     <div class="col">
                                         <div class="row">
 
-                                            <div class="col-3">
+                                            {{-- <div class="col-3">
                                                 <div class="form-group">
                                                     <label class="mb-1 mt-3"
                                                         for="display_landing_page">{{ __('Enable Landing Page') }}</label>
@@ -598,7 +598,7 @@
                                                             for="display_landing_page"></label>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
