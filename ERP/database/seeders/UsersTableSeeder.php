@@ -3157,6 +3157,18 @@ class UsersTableSeeder extends Seeder
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
+            [
+                "name" => "manage biometric attendance",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "biometric attendance synchronize",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
         ];
 
         Permission::insert($arrPermissions);
@@ -3751,6 +3763,8 @@ class UsersTableSeeder extends Seeder
             ['name' => 'show zoom meeting'],
             ['name' => 'delete zoom meeting'],
             ['name' => 'delete company policy'],
+            ["name" => "manage biometric attendance"],
+            ["name" => "biometric attendance synchronize"],
 
         ];
 

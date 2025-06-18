@@ -82,7 +82,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/style.css')}}" id="main-style-link">
     @endif
 
-   
+
     @if (isset($setting['SITE_RTL']) && $setting['SITE_RTL'] == 'on')
         <link rel="stylesheet" href="{{ asset('assets/css/custom-auth-rtl.css') }}" id="main-style-link">
     @else
@@ -92,14 +92,14 @@
         <link rel="stylesheet" href="{{ asset('assets/css/custom-auth-dark.css') }}" id="main-style-link">
     @endif
 
-    
+
     <link rel="stylesheet" href="{{ asset('assets/css/customizer.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
     <style>
         :root {
-            --color-customColor: <?= $color ?>;    
+            --color-customColor: <?= $color ?>;
         }
     </style>
 
@@ -118,7 +118,7 @@
                 <nav class="navbar navbar-expand-md default">
                     <div class="container">
                         <div class="navbar-brand">
-                           
+
                         <a class="navbar-brand" href="#">
                             @if ($setting['cust_darklayout'] == 'on')
                                 <img class="logo"
@@ -168,82 +168,7 @@
             </footer>
         </div>
     </div>
-{{-- <div class="auth-wrapper auth-v3">
-    <div class="bg-auth-side bg-primary"></div>
-    <div class="auth-content">
-        <nav class="navbar navbar-expand-md navbar-light default">
-            <div class="container-fluid pe-2">
-                <a class="navbar-brand" href="#">
-                    @if($setting['cust_darklayout'] && $setting['cust_darklayout'] == 'on' )
-                        <img src="{{ $logo . '/' . (isset($company_logos) && !empty($company_logos) ? $company_logos : 'logo-dark.png') }}"
-                             alt="{{ config('app.name', 'ERPGo') }}" class="logo">
-                    @else
-                        <img src="{{ $logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png') }}"
-                             alt="{{ config('app.name', 'ERPGo') }}" class="logo">
-                    @endif
-                </a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarTogglerDemo01"
-                    aria-controls="navbarTogglerDemo01"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarTogglerDemo01" style="flex-grow: 0;">
-                    <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            @include('landingpage::layouts.buttons')
-                        </li>
-                        @yield('auth-topbar')
-                    </ul>
 
-                </div>
-            </div>
-        </nav>
-        <div class="card">
-            <div class="row align-items-center text-start">
-                <div class="col-xl-6">
-                    <div class="card-body">
-                        @yield('content')
-                    </div>
-                </div>
-                <div class="col-xl-6 img-card-side">
-                    <div class="auth-img-content">
-                        <img
-                            src="{{ asset('assets/images/auth/img-auth-3.svg') }}"
-                            alt=""
-                            class="img-fluid"
-                        />
-                        <h3 class="text-white mb-4 mt-5">
-                            “Attention is the new currency”
-                        </h3>
-                        <p class="text-white">
-                            The more effortless the writing looks, the more effort the
-                            writer actually put into the process.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="auth-footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-6">
-                        <p class="mb-0"> &copy;
-                            {{ date('Y') }} {{ Utility::getValByName('footer_text') ? Utility::getValByName('footer_text') : config('app.name', 'ERPGo') }}
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
-<!-- [ auth-signup ] end -->
 
 <!-- Required Js -->
 <script src="{{ asset('assets/js/vendor-all.js') }}"></script>

@@ -530,7 +530,7 @@ class SystemController extends Controller
             }else{
                 $noclang = "en";
             }
-            
+
             $offerlangName = Language::languageData($offerlang);
             $joininglangName = Language::languageData($joininglang);
             $explangName = Language::languageData($explang);
@@ -1523,7 +1523,7 @@ class SystemController extends Controller
                     ]
                 );
             }
-        }          
+        }
             return redirect()->back()->with('success', __('Pusher Settings updated successfully'));
     }
 
@@ -1694,10 +1694,10 @@ class SystemController extends Controller
                     ]
                 );
             }
-        }          
+        }
             return redirect()->back()->with('success', __('Recaptcha Settings updated successfully'));
     }
-    
+
     public function storageSettingStore(Request $request)
     {
 
@@ -2365,7 +2365,7 @@ class SystemController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', __('Setting successfully updated.'));    
+        return redirect()->back()->with('success', __('Setting successfully updated.'));
     }
 
 

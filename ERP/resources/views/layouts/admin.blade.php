@@ -99,8 +99,34 @@
 
     <style>
         :root {
-            --color-customColor: <?= $color ?>;    
+            --color-customColor: <?= $color ?>;
         }
+    </style>
+
+    <style>
+        /* Default Sidebar Collapsed */
+        .dash-sidebar {
+            width: 80px; /* Collapsed sidebar width */
+            transition: width 0.3s ease;
+        }
+
+        .dash-container {
+            position: relative;
+            top: 70px;
+            margin-left: 80px; /* Margin for collapsed sidebar */
+            min-height: calc(100vh - 70px);
+            transition: margin-left 0.3s ease; /* Smooth transition for margin */
+        }
+
+        /* Sidebar Expand on Hover */
+        .dash-sidebar:hover {
+            width: 255px; /* Expanded sidebar width */
+        }
+
+        .dash-sidebar:hover ~ .dash-container {
+            margin-left: 255px; /* Adjust margin when sidebar is expanded */
+        }
+
     </style>
 
     <link rel="stylesheet" href="{{ asset('css/custom-color.css') }}">

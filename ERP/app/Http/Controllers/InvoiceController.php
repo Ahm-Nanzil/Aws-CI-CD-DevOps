@@ -459,19 +459,19 @@ class InvoiceController extends Controller
     }
     public function productDestroy(Request $request)
     {
-        
+
         if (\Auth::user()->can('delete invoice product')) {
             $invoiceProduct = InvoiceProduct::find($request->id);
-            
+
             if($invoiceProduct)
             {
                 $invoice = Invoice::find($invoiceProduct->invoice_id);
                 $productService = ProductService::find($invoiceProduct->product_id);
-    
+
                 Utility::updateUserBalance('customer', $invoice->customer_id, $request->amount, 'debit');
-    
+
                 TransactionLines::where('reference_sub_id',$productService->id)->where('reference','Invoice')->delete();
-            
+
                 InvoiceProduct::where('id', '=', $request->id)->delete();
             }
 
@@ -791,7 +791,7 @@ class InvoiceController extends Controller
             InvoicePayment::where('id', '=', $payment_id)->delete();
 
             InvoiceBankTransfer::where('id', '=', $payment_id)->delete();
-            TransactionLines::where('reference_sub_id',$payment_id)->where('reference','Invoice Payment')->delete();        
+            TransactionLines::where('reference_sub_id',$payment_id)->where('reference','Invoice Payment')->delete();
 
 
             $invoice = Invoice::where('id', $invoice_id)->first();
@@ -1253,7 +1253,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::with(['creditNote','payments.bankAccount','items.product.unit'])->find($id);
 
         if(!empty($invoice)){
-            
+
             $user_id        = $invoice->created_by;
             $user           = User::find($user_id);
             $invoicePayment = InvoicePayment::where('invoice_id', $invoice->id)->first();
@@ -1265,9 +1265,9 @@ class InvoiceController extends Controller
         $invoice->customField = CustomField::getData($invoice, 'invoice');
 
         $customFields         = CustomField::where('module', '=', 'invoice')->get();
-        
+
         $company_payment_setting = Utility::getCompanyPaymentSetting($user_id);
-        
+
         $settings = Utility::settingsById($invoice->created_by);
 
         return view('invoice.customer_invoice', compact('settings','invoice', 'customer', 'iteams', 'invoicePayment', 'customFields', 'user','company_payment_setting'));

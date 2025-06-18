@@ -69,7 +69,7 @@
 @endsection
 @section('content')
     <div class="row">
-        <div class="col-xl-2 col-md-3">
+        {{-- <div class="col-xl-2 col-md-3">
             <div class="card sticky-top" style="top:30px">
                 <div class="list-group list-group-flush" id="useradd-sidenav">
                     @foreach ($languages as $code => $lang)
@@ -80,7 +80,7 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-xl-10 col-md-9">
             <div class="p-3 card">

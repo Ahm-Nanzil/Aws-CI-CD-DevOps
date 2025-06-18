@@ -24,14 +24,7 @@
                                 class="drp-text hide-mob text-primary me-2">{{ucfirst($LangName->full_name)}}</span>
                                 <i class="ti ti-chevron-down drp-arrow nocolor"></i>
                             </a>
-                            <div class="dropdown-menu dash-h-dropdown dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                                @foreach ($languages as $code => $language)
-                                    <a href="{{ route('notification_templates.index', [$notification_template->id, $code]) }}"
-                                       class="dropdown-item {{ $curr_noti_tempLang->lang == $code ? 'text-primary' : '' }}">
-                                        {{ucFirst($language)}}
-                                    </a>
-                                @endforeach
-                            </div>
+
                         </li>
                     </ul>
                     <ul class="list-unstyled mb-0 m-2 me-2">

@@ -26,24 +26,7 @@
     $languages = App\Models\Utility::languages();
 @endphp
 
-@section('language-bar')
-    <div class="lang-dropdown-only-desk">
-        <li class="dropdown dash-h-item drp-language">
-            <a class="dash-head-link dropdown-toggle btn" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="drp-text"> {{ $languages[$lang] }}
-                </span>
-            </a>
-            <div class="dropdown-menu dash-h-dropdown dropdown-menu-end">
-                @foreach($languages as $code => $language)
-                <a href="{{ route('login',$code) }}"tabindex="0"
-                class="dropdown-item ">
-                <span>{{ Str::ucfirst($language) }}</span>
-            </a>
-                @endforeach
-            </div>
-        </li>
-    </div>
-@endsection
+
 
 @section('content')
     <div class="card-body">
@@ -103,62 +86,4 @@
         {{ Form::close() }}
     </div>
 @endsection
-
-{{-- @section('content')
-    <div class="">
-        <h2 class="mb-3 f-w-600">{{__('Login')}}</h2>
-    </div>
-    {{Form::open(array('route'=>'login','method'=>'post','id'=>'loginForm' ))}}
-    @csrf
-    <div class="">
-        <div class="form-group mb-3">
-            <label for="email" class="form-label">{{__('Email')}}</label>
-            <input class="form-control @error('email') is-invalid @enderror" id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-            @error('email')
-            <div class="invalid-feedback" role="alert">{{ $message }}</div>
-            @enderror
-        </div>
-        <div class="form-group mb-3">
-            <label for="password" class="form-label">{{__('Password')}}</label>
-            <input class="form-control @error('password') is-invalid @enderror" id="password" type="password" name="password" required autocomplete="current-password">
-            @error('password')
-            <div class="invalid-feedback" role="alert">{{ $message }}</div>
-            @enderror
-
-        </div>
-
-        @if(env('RECAPTCHA_MODULE') == 'on')
-            <div class="form-group mb-3">
-                {!! NoCaptcha::display() !!}
-                @error('g-recaptcha-response')
-                <span class="small text-danger" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                @enderror
-            </div>
-        @endif
-        <div class="form-group mb-4">
-
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-xs">{{ __('Forgot Your Password?') }}</a>
-                @endif
-
-        </div>
-        <div class="d-grid">
-            <button type="submit" class="btn-login btn btn-primary btn-block mt-2" id="login_button">{{__('Login')}}</button>
-        </div>
-
-    </div>
-    {{Form::close()}}
-@endsection --}}
-
-<script src="{{asset('js/jquery.min.js')}}"></script>
-{{-- <script>
-    $(document).ready(function () {
-        $("#form_data").submit(function (e) {
-            $("#login_button").attr("disabled", true);
-            return true;
-        });
-    });
-</script> --}}
 

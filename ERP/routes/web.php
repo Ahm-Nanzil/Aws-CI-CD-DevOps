@@ -137,6 +137,16 @@ use App\Http\Controllers\ProjectExpenseController;
 use App\Http\Controllers\NepalstePaymnetController;
 use App\Http\Controllers\QuotationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HierarchyController;
+use App\Http\Controllers\InventorySetupController;
+use App\Http\Controllers\InventoryReturnVoucherController;
+use App\Http\Controllers\InventoryDeliveryNoteController;
+use App\Http\Controllers\InventoryLossAdjustController;
+use App\Http\Controllers\InventoryStockExportController;
+use App\Http\Controllers\InventoryPackingListController;
+use App\Http\Controllers\InventoryCustSuppController;
+use App\Http\Controllers\InventoryHistoryController;
+use App\Http\Controllers\InventoryReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -251,7 +261,7 @@ Route::group(
         Route::post('company-payment-setting', [SystemController::class, 'saveCompanyPaymentSettings'])->name('company.payment.settings');
         Route::post('currency-settings', [SystemController::class, 'saveCurrencySettings'])->name('currency.settings');
         Route::post('company-preview', [SystemController::class, 'currencyPreview'])->name('currency.preview');
-        
+
         Route::get('test-mail', [SystemController::class, 'testMail'])->name('test.mail');
         Route::post('test-mail', [SystemController::class, 'testMail'])->name('test.mail');
         Route::post('test-mail/send', [SystemController::class, 'testSendMail'])->name('test.send.mail');
@@ -1524,6 +1534,181 @@ Route::post('create/ip', [SystemController::class, 'storeIp'])->name('store.ip')
 Route::get('edit/ip/{id}', [SystemController::class, 'editIp'])->name('edit.ip')->middleware(['auth', 'XSS']);
 Route::post('edit/ip/{id}', [SystemController::class, 'updateIp'])->name('update.ip')->middleware(['auth', 'XSS']);
 Route::delete('destroy/ip/{id}', [SystemController::class, 'destroyIp'])->name('destroy.ip')->middleware(['auth', 'XSS']);
+
+// Hierarchy
+Route::get('hierarchy', [HierarchyController::class, 'index'])->name('hierarchy_structure');
+Route::get('hierarchy/new', [HierarchyController::class, 'create'])->name('hierarchy.create');
+Route::post('hierarchy/new', [HierarchyController::class, 'store']);
+Route::get('hierarchy/edit/{id}', [HierarchyController::class, 'show'])->name('hierarchy.edit');
+Route::post('hierarchy/edit/{id}', [HierarchyController::class, 'edit']);
+Route::delete('hierarchy/delete/{id}', [HierarchyController::class, 'destroy'])->name('hierarchy.destroy');
+Route::get('hierarchy/previous/{id}', [HierarchyController::class, 'previous'])->name('hierarchy.previous');
+Route::get('hierarchy/next/{id}', [HierarchyController::class, 'next'])->name('hierarchy.next');
+
+// inventory & logistic start
+Route::group(
+    [
+        'middleware' => [
+            'auth',
+            'XSS',
+            'revalidate',
+        ],
+    ], function () {
+        Route::resource('inventory-general', InventorySetupController::class);
+        Route::post('inventory/general/items', [InventorySetupController::class, 'items'])->name('inventory.items');
+        Route::post('inventory/general/recieve&delivery', [InventorySetupController::class, 'items'])->name('inventory.recieve&delivery');
+
+        // inventory colors
+        Route::get('inventory/colors', [InventorySetupController::class, 'colors'])->name('inventory.colors');
+        Route::get('inventory/colors/create', [InventorySetupController::class, 'colorsCreate'])->name('inventory.colors.create');
+        Route::post('inventory/colors/store', [InventorySetupController::class, 'colorsStore'])->name('inventory.colors.store');
+        Route::get('inventory/colors/{id}/edit', [InventorySetupController::class, 'colorsEdit'])->name('inventory.colors.edit');
+        Route::put('inventory/colors/{id}/update', [InventorySetupController::class, 'colorsUpdate'])->name('inventory.colors.update');
+        Route::delete('inventory/colors/{id}', [InventorySetupController::class, 'colorsDestroy'])->name('inventory.colors.destroy');
+
+        // inventory product types
+        Route::get('inventory/product-types', [InventorySetupController::class, 'productTypes'])->name('inventory.product-types');
+        Route::get('inventory/product-types/create', [InventorySetupController::class, 'productTypesCreate'])->name('inventory.product-types.create');
+        Route::post('inventory/product-types/store', [InventorySetupController::class, 'productTypesStore'])->name('inventory.product-types.store');
+        Route::get('inventory/product-types/{id}/edit', [InventorySetupController::class, 'productTypesEdit'])->name('inventory.product-types.edit');
+        Route::put('inventory/product-types/{id}/update', [InventorySetupController::class, 'productTypesUpdate'])->name('inventory.product-types.update');
+        Route::delete('inventory/product-types/{id}', [InventorySetupController::class, 'productTypesDestroy'])->name('inventory.product-types.destroy');
+
+        // inventory product categories
+        Route::get('inventory/product-categories', [InventorySetupController::class, 'productCategories'])->name('inventory.product-categories');
+        // main categories
+        Route::get('inventory/product-categories/main/create', [InventorySetupController::class, 'productCategoriesMainCreate'])->name('inventory.product-categories.main.create');
+        Route::post('inventory/product-categories/main/store', [InventorySetupController::class, 'productCategoriesMainStore'])->name('inventory.product-categories.main.store');
+        Route::get('inventory/product-categories/main/{id}/edit', [InventorySetupController::class, 'productCategoriesMainEdit'])->name('inventory.product-categories.main.edit');
+        Route::put('inventory/product-categories/main/{id}/update', [InventorySetupController::class, 'productCategoriesMainUpdate'])->name('inventory.product-categories.main.update');
+        Route::delete('inventory/product-categories/main/{id}', [InventorySetupController::class, 'productCategoriesMainDestroy'])->name('inventory.product-categories.main.destroy');
+
+        // sub categories
+        Route::get('inventory/product-categories/sub/create', [InventorySetupController::class, 'productCategoriesSubCreate'])->name('inventory.product-categories.sub.create');
+        Route::post('inventory/product-categories/sub/store', [InventorySetupController::class, 'productCategoriesSubStore'])->name('inventory.product-categories.sub.store');
+        Route::get('inventory/product-categories/sub/{id}/edit', [InventorySetupController::class, 'productCategoriesSubEdit'])->name('inventory.product-categories.sub.edit');
+        Route::put('inventory/product-categories/sub/{id}/update', [InventorySetupController::class, 'productCategoriesSubUpdate'])->name('inventory.product-categories.sub.update');
+        Route::delete('inventory/product-categories/sub/{id}', [InventorySetupController::class, 'productCategoriesSubDestroy'])->name('inventory.product-categories.sub.destroy');
+
+
+        // child categories
+        Route::get('inventory/product-categories/child/create', [InventorySetupController::class, 'productCategoriesChildCreate'])->name('inventory.product-categories.child.create');
+        Route::post('inventory/product-categories/child/store', [InventorySetupController::class, 'productCategoriesChildStore'])->name('inventory.product-categories.child.store');
+        Route::get('inventory/product-categories/child/{id}/edit', [InventorySetupController::class, 'productCategoriesChildEdit'])->name('inventory.product-categories.child.edit');
+        Route::put('inventory/product-categories/child/{id}/update', [InventorySetupController::class, 'productCategoriesChildUpdate'])->name('inventory.product-categories.child.update');
+        Route::delete('inventory/product-categories/child/{id}', [InventorySetupController::class, 'productCategoriesChildDestroy'])->name('inventory.product-categories.child.destroy');
+
+        // inventory model
+        Route::get('inventory/model', [InventorySetupController::class, 'model'])->name('inventory.model');
+        Route::get('inventory/model/create', [InventorySetupController::class, 'modelCreate'])->name('inventory.model.create');
+        Route::post('inventory/model/store', [InventorySetupController::class, 'modelStore'])->name('inventory.model.store');
+        Route::get('inventory/model/{id}/edit', [InventorySetupController::class, 'modelEdit'])->name('inventory.model.edit');
+        Route::put('inventory/model/{id}/update', [InventorySetupController::class, 'modelUpdate'])->name('inventory.model.update');
+        Route::delete('inventory/model/{id}', [InventorySetupController::class, 'modelDestroy'])->name('inventory.model.destroy');
+
+        // inventory styles
+        Route::get('inventory/style', [InventorySetupController::class, 'style'])->name('inventory.style');
+        Route::get('inventory/style/create', [InventorySetupController::class, 'styleCreate'])->name('inventory.style.create');
+        Route::post('inventory/style/store', [InventorySetupController::class, 'styleStore'])->name('inventory.style.store');
+        Route::get('inventory/style/{id}/edit', [InventorySetupController::class, 'styleEdit'])->name('inventory.style.edit');
+        Route::put('inventory/style/{id}/update', [InventorySetupController::class, 'styleUpdate'])->name('inventory.style.update');
+        Route::delete('inventory/style/{id}', [InventorySetupController::class, 'styleDestroy'])->name('inventory.style.destroy');
+
+         // inventory warhouse custom fields
+         Route::get('inventory/custom', [InventorySetupController::class, 'custom'])->name('inventory.custom');
+         Route::get('inventory/custom/create', [InventorySetupController::class, 'customCreate'])->name('inventory.custom.create');
+         Route::post('inventory/custom/store', [InventorySetupController::class, 'customStore'])->name('inventory.custom.store');
+         Route::get('inventory/custom/{id}/edit', [InventorySetupController::class, 'customEdit'])->name('inventory.custom.edit');
+         Route::put('inventory/custom/{id}/update', [InventorySetupController::class, 'customUpdate'])->name('inventory.custom.update');
+         Route::delete('inventory/custom/{id}', [InventorySetupController::class, 'customDestroy'])->name('inventory.custom.destroy');
+
+        // inventory prefix
+        Route::get('inventory/prefix', [InventorySetupController::class, 'prefix'])->name('inventory.prefix');
+
+
+        // inventory reset
+        Route::get('inventory/reset-inventory', [InventorySetupController::class, 'reset'])->name('inventory.reset');
+        Route::post('inventory/reset-inventory', [InventorySetupController::class, 'resetInventory'])->name('inventory.reset');
+
+        // inventory minmax
+        Route::get('inventory/minmax', [InventorySetupController::class, 'minmax'])->name('inventory.minmax');
+        Route::post('inventory/minmax', [InventorySetupController::class, 'minmaxSave'])->name('inventory.minmax');
+
+        // inventory warhouse custom fields
+         Route::get('inventory/approval', [InventorySetupController::class, 'approval'])->name('inventory.approval');
+         Route::get('inventory/approval/create', [InventorySetupController::class, 'approvalCreate'])->name('inventory.approval.create');
+         Route::post('inventory/approval/store', [InventorySetupController::class, 'approvalStore'])->name('inventory.approval.store');
+         Route::get('inventory/approval/{id}/edit', [InventorySetupController::class, 'approvalEdit'])->name('inventory.approval.edit');
+         Route::post('inventory/approval/{id}/update', [InventorySetupController::class, 'approvalUpdate'])->name('inventory.approval.update');
+         Route::delete('inventory/approval/{id}', [InventorySetupController::class, 'approvalDestroy'])->name('inventory.approval.destroy');
+
+        //  inventory permission
+        Route::get('inventory/permission', [InventorySetupController::class, 'permission'])->name('inventory.permission');
+
+
+        // inventory retuning voucher
+        Route::get('inventory/return-voucher', [InventoryReturnVoucherController::class, 'index'])->name('inventory.return-voucher');
+        Route::get('inventory/return-voucher/create', [InventoryReturnVoucherController::class, 'create'])->name('inventory.return-voucher.create');
+        Route::post('inventory/return-voucher/store', [InventoryReturnVoucherController::class, 'store'])->name('inventory.return-voucher.store');
+        Route::get('inventory/return-voucher/{id}/edit', [InventoryReturnVoucherController::class, 'edit'])->name('inventory.return-voucher.edit');
+        Route::post('inventory/return-voucher/{id}/update', [InventoryReturnVoucherController::class, 'update'])->name('inventory.return-voucher.update');
+        Route::delete('inventory/return-voucher/{id}', [InventoryReturnVoucherController::class, 'destroy'])->name('inventory.return-voucher.destroy');
+
+        // inventory stock export
+        Route::get('inventory/stock-export', [InventoryStockExportController::class, 'index'])->name('inventory.stock-export');
+        Route::get('inventory/stock-export/create', [InventoryStockExportController::class, 'create'])->name('inventory.stock-export.create');
+        Route::post('inventory/stock-export/store', [InventoryStockExportController::class, 'store'])->name('inventory.stock-export.store');
+        Route::get('inventory/stock-export/{id}/edit', [InventoryStockExportController::class, 'edit'])->name('inventory.stock-export.edit');
+        Route::post('inventory/stock-export/{id}/update', [InventoryStockExportController::class, 'update'])->name('inventory.stock-export.update');
+        Route::delete('inventory/stock-export/{id}', [InventoryStockExportController::class, 'destroy'])->name('inventory.stock-export.destroy');
+
+        // inventory delivery note
+        // Route::resource('inventory/delivery-notes', InventoryDeliveryNoteController::class);
+        Route::get('inventory/delivery-notes', [InventoryDeliveryNoteController::class, 'index'])->name('inventory.delivery-notes');
+        Route::get('inventory/delivery-notes/create', [InventoryDeliveryNoteController::class, 'create'])->name('inventory.delivery-notes.create');
+        Route::post('inventory/delivery-notes/store', [InventoryDeliveryNoteController::class, 'store'])->name('inventory.delivery-notes.store');
+        Route::get('inventory/delivery-notes/{id}/edit', [InventoryDeliveryNoteController::class, 'edit'])->name('inventory.delivery-notes.edit');
+        Route::post('inventory/delivery-notes/{id}/update', [InventoryDeliveryNoteController::class, 'update'])->name('inventory.delivery-notes.update');
+        Route::delete('inventory/delivery-notes/{id}', [InventoryDeliveryNoteController::class, 'destroy'])->name('inventory.delivery-notes.destroy');
+
+        // inventory loss and adjustment
+        Route::get('inventory/loss-adjustment', [InventoryLossAdjustController::class, 'index'])->name('inventory.loss-adjustment');
+        Route::get('inventory/loss-adjustment/create', [InventoryLossAdjustController::class, 'create'])->name('inventory.loss-adjustment.create');
+        Route::post('inventory/loss-adjustment/store', [InventoryLossAdjustController::class, 'store'])->name('inventory.loss-adjustment.store');
+        Route::get('inventory/loss-adjustment/{id}/edit', [InventoryLossAdjustController::class, 'edit'])->name('inventory.loss-adjustment.edit');
+        Route::post('inventory/loss-adjustment/{id}/update', [InventoryLossAdjustController::class, 'update'])->name('inventory.loss-adjustment.update');
+        Route::delete('inventory/loss-adjustment/{id}', [InventoryLossAdjustController::class, 'destroy'])->name('inventory.loss-adjustment.destroy');
+
+        // inventory packing list
+        Route::get('inventory/packing-list', [InventoryPackingListController::class, 'index'])->name('inventory.packing-list');
+        Route::get('inventory/packing-list/create', [InventoryPackingListController::class, 'create'])->name('inventory.packing-list.create');
+        Route::post('inventory/packing-list/store', [InventoryPackingListController::class, 'store'])->name('inventory.packing-list.store');
+        Route::get('inventory/packing-list/{id}/edit', [InventoryPackingListController::class, 'edit'])->name('inventory.packing-list.edit');
+        Route::post('inventory/packing-list/{id}/update', [InventoryPackingListController::class, 'update'])->name('inventory.packing-list.update');
+        Route::delete('inventory/packing-list/{id}', [InventoryPackingListController::class, 'destroy'])->name('inventory.packing-list.destroy');
+
+         // inventory Cust Supp
+         Route::get('inventory/cust-supp', [InventoryCustSuppController::class, 'index'])->name('inventory.cust-supp');
+         Route::get('inventory/cust-supp/create', [InventoryCustSuppController::class, 'create'])->name('inventory.cust-supp.create');
+         Route::post('inventory/cust-supp/store', [InventoryCustSuppController::class, 'store'])->name('inventory.cust-supp.store');
+         Route::get('inventory/cust-supp/{id}/edit', [InventoryCustSuppController::class, 'edit'])->name('inventory.cust-supp.edit');
+         Route::post('inventory/cust-supp/{id}/update', [InventoryCustSuppController::class, 'update'])->name('inventory.cust-supp.update');
+         Route::delete('inventory/cust-supp/{id}', [InventoryCustSuppController::class, 'destroy'])->name('inventory.cust-supp.destroy');
+         Route::get('inventory/de-return/create', [InventoryCustSuppController::class, 'deCreate'])->name('inventory.de-return.create');
+         Route::post('inventory/de-return/store', [InventoryCustSuppController::class, 'deStore'])->name('inventory.de-return.store');
+
+
+        //  inventory history
+        Route::get('inventory/history', [InventoryHistoryController::class, 'index'])->name('inventory.history');
+
+        // inventory report
+        Route::get('inventory/report', [InventoryReportController::class, 'index'])->name('inventory.report');
+
+
+
+    }
+);
+
 
 //lang enable / disable
 Route::post('disable-language', [LanguageController::class, 'disableLang'])->name('disablelanguage')->middleware(['auth', 'XSS']);

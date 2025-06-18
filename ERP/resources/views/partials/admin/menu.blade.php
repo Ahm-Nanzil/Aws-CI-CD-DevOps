@@ -10,11 +10,57 @@
 @endphp
 
 {{--<nav class="dash-sidebar light-sidebar {{(isset($mode_setting['cust_theme_bg']) && $mode_setting['cust_theme_bg'] == 'on')?'transprent-bg':''}}">--}}
+<style>
+    /* Default collapsed sidebar (only icons visible) */
+.sidebar-collapsed {
+    width: 80px; /* Adjust as needed */
+    transition: width 0.3s ease;
+    overflow: hidden; /* Hide the text */
+}
 
+.sidebar-collapsed .dash-mtext {
+    display: none; /* Hide menu text */
+}
+
+.sidebar-collapsed .navbar-content {
+    width: 80px;
+}
+
+/* Hide the arrow icon when the sidebar is collapsed */
+.sidebar-collapsed .dash-arrow {
+    display: none; /* Hide the arrow */
+}
+
+/* Expanded sidebar on hover */
+.sidebar-collapsed:hover {
+    width: 250px; /* Full sidebar width */
+}
+
+.sidebar-collapsed:hover .dash-mtext {
+    display: inline-block; /* Show the text on hover */
+}
+
+.sidebar-collapsed:hover .navbar-content {
+    width: 250px;
+}
+
+/* Show the arrow icon when the sidebar is expanded */
+.sidebar-collapsed:hover .dash-arrow {
+    display: inline-block; /* Show the arrow */
+}
+
+/* Optional styling for icons to be centered */
+.dash-micon {
+    text-align: center;
+    display: block;
+    padding: 10px 0;
+}
+
+</style>
 @if (isset($setting['cust_theme_bg']) && $setting['cust_theme_bg'] == 'on')
-    <nav class="dash-sidebar light-sidebar transprent-bg">
+    <nav class="dash-sidebar light-sidebar transprent-bg sidebar-collapsed">
 @else
-    <nav class="dash-sidebar light-sidebar">
+    <nav class="dash-sidebar light-sidebar sidebar-collapsed">
 @endif
     <div class="navbar-wrapper">
         <div class="m-header main-logo">
@@ -782,47 +828,10 @@
 
 
 
-                        <!--------------------- Start User Managaement System ----------------------------------->
-
-                        @if(\Auth::user()->type!='super admin' && ( Gate::check('manage user') || Gate::check('manage role') || Gate::check('manage client')))
-                        <li class="dash-item dash-hasmenu {{ (Request::segment(1) == 'users' || Request::segment(1) == 'roles'
-                            || Request::segment(1) == 'clients'  || Request::segment(1) == 'userlogs')?' active dash-trigger':''}}">
-                            <a href="#!" class="dash-link {{ (Request::segment(1) == 'users' || Request::segment(1) == 'roles' || Request::segment(1) == 'clients')?' active dash-trigger':''}}"
-                            ><span class="dash-micon"><i class="ti ti-users"></i></span
-                                ><span class="dash-mtext">{{__('User Management')}}</span
-                                ><span class="dash-arrow"><i data-feather="chevron-right"></i></span
-                                ></a>
-                            <ul class="dash-submenu">
-                                @can('manage user')
-                                    <li class="dash-item {{ (Request::route()->getName() == 'users.index' || Request::route()->getName() == 'users.create' || Request::route()->getName() == 'users.edit' || Request::route()->getName() == 'user.userlog') ? ' active' : '' }}">
-                                        <a class="dash-link" href="{{ route('users.index') }}">{{__('User')}}</a>
-                                    </li>
-                                @endcan
-                                @can('manage role')
-                                    <li class="dash-item {{ (Request::route()->getName() == 'roles.index' || Request::route()->getName() == 'roles.create' || Request::route()->getName() == 'roles.edit') ? ' active' : '' }} ">
-                                        <a class="dash-link" href="{{route('roles.index')}}">{{__('Role')}}</a>
-                                    </li>
-                                @endcan
-                                @can('manage client')
-                                    <li class="dash-item {{ (Request::route()->getName() == 'clients.index' || Request::segment(1) == 'clients' || Request::route()->getName() == 'clients.edit') ? ' active' : '' }}">
-                                        <a class="dash-link" href="{{ route('clients.index') }}">{{__('Client')}}</a>
-                                    </li>
-                                @endcan
-{{--                                    @can('manage user')--}}
-{{--                                        <li class="dash-item {{ (Request::route()->getName() == 'users.index' || Request::segment(1) == 'users' || Request::route()->getName() == 'users.edit') ? ' active' : '' }}">--}}
-{{--                                            <a class="dash-link" href="{{ route('user.userlog') }}">{{__('User Logs')}}</a>--}}
-{{--                                        </li>--}}
-{{--                                    @endcan--}}
-                            </ul>
-                        </li>
-                    @endif
-
-                        <!--------------------- End User Managaement System----------------------------------->
-
 
                         <!--------------------- Start Products System ----------------------------------->
 
-                        @if( Gate::check('manage product & service') || Gate::check('manage product & service'))
+                        {{-- @if( Gate::check('manage product & service') || Gate::check('manage product & service'))
                         <li class="dash-item dash-hasmenu">
                             <a href="#!" class="dash-link ">
                                 <span class="dash-micon"><i class="ti ti-shopping-cart"></i></span><span class="dash-mtext">{{__('Products System')}}</span><span class="dash-arrow">
@@ -843,9 +852,106 @@
                                 @endif
                             </ul>
                         </li>
-                    @endif
+                    @endif --}}
 
                         <!--------------------- End Products System ----------------------------------->
+
+
+                          <!--------------------- Start inventory and logistic System ----------------------------------->
+
+                        @if( Gate::check('manage product & service') || Gate::check('manage product & service'))
+                        <li class="dash-item dash-hasmenu">
+                            {{-- <a href="#!" class="dash-link" style="display: flex; align-items: center;">
+                                <span class="dash-micon" style="flex-shrink: 0;">
+                                    <i class="ti ti-shopping-cart"></i>
+                                </span>
+                                <span class="dash-mtext" style="margin-left: 8px; line-height: 1.2;">
+                                    {!! __('Inventory &Logistic') !!}
+                                </span>
+                                <span class="dash-arrow" style="margin-left: auto;">
+                                    <i data-feather="chevron-right"></i>
+                                </span>
+                            </a> --}}
+                            <a href="#!" class="dash-link ">
+                                <span class="dash-micon"><i class="ti ti-shopping-cart"></i></span><span class="dash-mtext">{{__('Inventory & Logistic')}}</span><span class="dash-arrow">
+                                        <i data-feather="chevron-right"></i></span>
+                            </a>
+
+                            <ul class="dash-submenu">
+                                @if(Gate::check('manage product & service'))
+                                    <li class="dash-item {{ (Request::segment(1) == 'productservice')?'active':''}}">
+                                        <a href="{{ route('productservice.index') }}" class="dash-link">{{__('Products')}}
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(Gate::check('manage product & service'))
+                                    <li class="dash-item {{ (Request::segment(1) == 'productstock')?'active':''}}">
+                                        <a href="{{ route('productstock.index') }}" class="dash-link">{{__('Product Stock')}}
+                                        </a>
+                                    </li>
+                                @endif
+                                <li class="dash-item {{ (Request::segment(1) == 'return-voucher')?'active':''}}">
+                                    <a href="{{ route('inventory.return-voucher') }}" class="dash-link">{{ __('Inventory receiving voucher') }}</a>
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'stock-export')?'active':''}}">
+                                    <a href="{{ route('inventory.stock-export') }}" class="dash-link">{{ __('Cust Delivery Notes') }}</a>
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'packing-list')?'active':''}}">
+                                    <a href="{{ route('inventory.packing-list') }}" class="dash-link">{{ __('Packing List') }}</a>
+
+                                </li>
+
+                                <li class="dash-item {{ (Request::segment(1) == 'delivery-note')?'active':''}}">
+                                    <a href="{{ route('inventory.delivery-notes') }}" class="dash-link">
+                                        {{ __('Internal delivery note') }}
+                                    </a>
+
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'loss-adjustment')?'active':''}}">
+                                    <a href="{{ route('inventory.loss-adjustment') }}" class="dash-link">
+                                        {{ __('Loss and adjustment') }}
+                                    </a>
+
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'cust-supp')?'active':''}}">
+                                    <a href="{{ route('inventory.cust-supp') }}" class="dash-link">
+                                        {{ __('Cust & Supp Returns') }}
+                                    </a>
+
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'history')?'active':''}}">
+                                    <a href="{{ route('inventory.history') }}" class="dash-link">
+                                        {{ __('Inventory History') }}
+                                    </a>
+
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'report')?'active':''}}">
+                                    <a href="{{ route('inventory.report') }}" class="dash-link">
+                                        {{ __('Inventory Report') }}
+                                    </a>
+
+
+                                </li>
+                                <li class="dash-item {{ (Request::segment(1) == 'inventory-general')?'active':''}}">
+                                    <a href="{{ route('inventory-general.index') }}" class="dash-link">{{__('Inventory Setup')}}
+                                    </a>
+                                </li>
+                                @can('manage warehouse')
+                                        <li class="dash-item {{ (Request::route()->getName() == 'warehouse.index' || Request::route()->getName() == 'warehouse.show') ? ' active' : '' }}"><a class="dash-link" href="{{ route('warehouse.index') }}">{{__('Warehouse')}}</a>
+                                        </li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!--------------------- End inventory and logistic System ----------------------------------->
+
 
                         <!--------------------- Start POs System ----------------------------------->
 
@@ -928,7 +1034,6 @@
                                     <span class="dash-mtext">{{ __('Email Template') }}</span></a>
                             </li>
 
-                            @include('landingpage::menu.landingpage')
 
 
                         @endif
@@ -949,6 +1054,47 @@
 
 
                         <!--------------------- End System Setup ----------------------------------->
+                        <!--------------------- Start User Managaement System ----------------------------------->
+
+                        @if(\Auth::user()->type!='super admin' && ( Gate::check('manage user') || Gate::check('manage role') || Gate::check('manage client')))
+                            <li class="dash-item dash-hasmenu {{ (Request::segment(1) == 'users' || Request::segment(1) == 'roles'
+                            || Request::segment(1) == 'clients'  || Request::segment(1) == 'userlogs')?' active dash-trigger':''}}">
+                            <a href="#!" class="dash-link {{ (Request::segment(1) == 'users' || Request::segment(1) == 'roles' || Request::segment(1) == 'clients')?' active dash-trigger':''}}"
+                            ><span class="dash-micon"><i class="ti ti-users"></i></span
+                                ><span class="dash-mtext">{{__('Access Management')}}</span
+                                ><span class="dash-arrow"><i data-feather="chevron-right"></i></span
+                                ></a>
+                            <ul class="dash-submenu">
+                                @can('manage user')
+                                    <li class="dash-item {{ (Request::route()->getName() == 'users.index' || Request::route()->getName() == 'users.create' || Request::route()->getName() == 'users.edit' || Request::route()->getName() == 'user.userlog') ? ' active' : '' }}">
+                                        <a class="dash-link" href="{{ route('users.index') }}">{{__('User')}}</a>
+                                    </li>
+                                @endcan
+                                @can('manage role')
+                                    <li class="dash-item {{ (Request::route()->getName() == 'roles.index' || Request::route()->getName() == 'roles.create' || Request::route()->getName() == 'roles.edit') ? ' active' : '' }} ">
+                                        <a class="dash-link" href="{{route('roles.index')}}">{{__('Role')}}</a>
+                                    </li>
+                                @endcan
+                                @can('manage client')
+                                    <li class="dash-item {{ (Request::route()->getName() == 'clients.index' || Request::segment(1) == 'clients' || Request::route()->getName() == 'clients.edit') ? ' active' : '' }}">
+                                        <a class="dash-link" href="{{ route('clients.index') }}">{{__('Client')}}</a>
+                                    </li>
+                                @endcan
+                                <li class="dash-item {{ (Request::route()->getName() == 'hierarchy.index' || Request::segment(1) == 'hierarchy' || Request::route()->getName() == 'hierarchy.edit') ? ' active' : '' }}">
+                                    <a class="dash-link" href="{{ route('hierarchy_structure') }}">{{__('Structural Roles')}}</a>
+                                </li>
+{{--                                    @can('manage user')--}}
+{{--                                        <li class="dash-item {{ (Request::route()->getName() == 'users.index' || Request::segment(1) == 'users' || Request::route()->getName() == 'users.edit') ? ' active' : '' }}">--}}
+{{--                                            <a class="dash-link" href="{{ route('user.userlog') }}">{{__('User Logs')}}</a>--}}
+{{--                                        </li>--}}
+{{--                                    @endcan--}}
+                                </ul>
+                            </li>
+                        @endif
+
+                        <!--------------------- End User Managaement System----------------------------------->
+
+
 
                 </ul>
             @endif
@@ -1040,6 +1186,7 @@
                 </ul>
             @endif
 
+
                 <div class="navbar-footer border-top ">
                     <div class="d-flex align-items-center py-3 px-3 border-bottom">
                         <div class="me-2">
@@ -1052,10 +1199,7 @@
                                 <path d="M22.08 21.7046C21.75 22.0846 21.4 22.4446 21.02 22.7646L17.12 18.8546C17.1 18.8346 17.09 18.8246 17.08 18.8046C17.49 18.5146 17.84 18.1646 18.13 17.7546C18.15 17.7646 18.16 17.7746 18.18 17.7946L22.08 21.7046Z" fill="#162C4E"></path>
                             </svg>
                         </div>
-                        <div>
-                            <b class="d-block f-w-700">{{__('You need help?')}}</b>
-                            <span>{{__('Check out our repository')}} </span>
-                        </div>
+
                     </div>
                 </div>
         </div>

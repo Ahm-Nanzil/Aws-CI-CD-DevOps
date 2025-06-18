@@ -7,13 +7,7 @@
  $company_logo=Utility::getValByName('company_logo');
 @endphp
 @section('auth-topbar')
-    <li class="nav-item ">
-        <select class="btn btn-primary my-1 me-2 " onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" id="language">
-            @foreach(Utility::languages() as $language)
-                <option class="" @if($lang == $language) selected @endif value="{{ route('login',$language) }}">{{Str::upper($language)}}</option>
-            @endforeach
-        </select>
-    </li>
+
 @endsection
 @section('content')
     <div class="">
