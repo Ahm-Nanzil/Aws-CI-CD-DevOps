@@ -11,52 +11,54 @@
 
 
 <style>
+@media (min-width: 992px) {
     /* Default collapsed sidebar (only icons visible) */
-.sidebar-collapsed {
-    width: 80px; /* Adjust as needed */
-    transition: width 0.3s ease;
-    overflow: hidden; /* Hide the text */
-}
+    .sidebar-collapsed {
+        width: 80px; /* Adjust as needed */
+        transition: width 0.3s ease;
+        overflow: hidden; /* Hide the text */
+    }
 
-.sidebar-collapsed .dash-mtext {
-    display: none; /* Hide menu text */
-}
+    .sidebar-collapsed .dash-mtext {
+        display: none; /* Hide menu text */
+    }
 
-.sidebar-collapsed .navbar-content {
-    width: 80px;
-}
+    .sidebar-collapsed .navbar-content {
+        width: 80px;
+    }
 
-/* Hide the arrow icon when the sidebar is collapsed */
-.sidebar-collapsed .dash-arrow {
-    display: none; /* Hide the arrow */
-}
+    /* Hide the arrow icon when the sidebar is collapsed */
+    .sidebar-collapsed .dash-arrow {
+        display: none; /* Hide the arrow */
+    }
 
-/* Expanded sidebar on hover */
-.sidebar-collapsed:hover {
-    width: 250px; /* Full sidebar width */
-}
+    /* Expanded sidebar on hover */
+    .sidebar-collapsed:hover {
+        width: 250px; /* Full sidebar width */
+    }
 
-.sidebar-collapsed:hover .dash-mtext {
-    display: inline-block; /* Show the text on hover */
-}
+    .sidebar-collapsed:hover .dash-mtext {
+        display: inline-block; /* Show the text on hover */
+    }
 
-.sidebar-collapsed:hover .navbar-content {
-    width: 250px;
-}
+    .sidebar-collapsed:hover .navbar-content {
+        width: 250px;
+    }
 
-/* Show the arrow icon when the sidebar is expanded */
-.sidebar-collapsed:hover .dash-arrow {
-    display: inline-block; /* Show the arrow */
-}
+    /* Show the arrow icon when the sidebar is expanded */
+    .sidebar-collapsed:hover .dash-arrow {
+        display: inline-block; /* Show the arrow */
+    }
 
-/* Optional styling for icons to be centered */
-.dash-micon {
-    text-align: center;
-    display: block;
-    padding: 10px 0;
+    /* Optional styling for icons to be centered */
+    .dash-micon {
+        text-align: center;
+        display: block;
+        padding: 10px 0;
+    }
 }
-
 </style>
+
 <?php if(isset($setting['cust_theme_bg']) && $setting['cust_theme_bg'] == 'on'): ?>
     <nav class="dash-sidebar light-sidebar transprent-bg sidebar-collapsed">
 <?php else: ?>
